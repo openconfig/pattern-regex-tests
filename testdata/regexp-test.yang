@@ -1,0 +1,148 @@
+module regexp-test {
+  prefix "rt";
+  namespace "urn:openconfig-test";
+
+  import openconfig-types { prefix "oct"; }
+  import openconfig-bgp-types { prefix "ocbgpt"; }
+  import openconfig-inet-types { prefix "ocinet"; }
+
+  extension pattern-test-pass {
+    argument "testcase" {
+      yin-element false;
+    }
+    description
+      "A matching pattern for the given leaf.";
+  }
+
+  extension pattern-test-fail {
+    argument "testcase" {
+      yin-element false;
+    }
+    description
+      "A non-matching pattern for the given leaf.";
+  }
+
+  leaf ipv4-address {
+    type ocinet:ipv4-address;
+    rt:pattern-test-pass "255.255.255.255";
+    rt:pattern-test-pass "0.0.0.0";
+    rt:pattern-test-pass "1.1.1.1";
+    rt:pattern-test-fail "256.255.255.255";
+    rt:pattern-test-fail "1.1.1.256";
+    rt:pattern-test-fail "256.1.1.1%eth0";
+  }
+  leaf ip-address {
+    type ocinet:ip-address;
+    rt:pattern-test-pass "255.255.255.255";
+    rt:pattern-test-pass "2001:db8::1";
+    rt:pattern-test-fail "invalid-data";
+    rt:pattern-test-pass "::1";
+  }
+  leaf bgp-std-community {
+    type ocbgpt:bgp-std-community-type;
+    rt:pattern-test-pass "15169:42";
+    rt:pattern-test-pass "6643:21438";
+    rt:pattern-test-pass "29636:4444";
+    rt:pattern-test-pass "65535:65535";
+    rt:pattern-test-pass "0:0";
+    rt:pattern-test-fail "65536:1";
+    rt:pattern-test-fail "1:65536";
+    rt:pattern-test-fail "425353:comm";
+  }
+  leaf bgp-ext-community {
+    type ocbgpt:bgp-ext-community-type;
+    // Type 1 extended communities (2b AS: 4b integer)
+    rt:pattern-test-pass "29636:10";
+    rt:pattern-test-pass "5413:4294967295";
+    rt:pattern-test-pass "4445:0";
+    rt:pattern-test-fail "1273:4294967296";
+    rt:pattern-test-pass "2856:400";
+    rt:pattern-test-fail "5400:invalid";
+    rt:pattern-test-fail "i6643:10";
+    rt:pattern-test-pass "15169:22432";
+    // Type 2 extended communities: (4b IP: 2b integer)
+    rt:pattern-test-fail "1.1.1.1:4294967296";
+    rt:pattern-test-fail "1.2.3.4.5:10";
+    rt:pattern-test-pass "82.42.12.35:65535";
+    rt:pattern-test-fail "82.42.12.35:66536";
+    rt:pattern-test-fail "254.254.256.254:10";
+    rt:pattern-test-pass "0.0.0.0:200";
+    rt:pattern-test-fail "leading192.0.2.1:65535";
+    // 4b AS : 2b integer
+    rt:pattern-test-fail "4294967296:65535";
+    rt:pattern-test-pass "4294967295:65535";
+    rt:pattern-test-pass "0:65535";
+    rt:pattern-test-pass "4294967295:0";
+    rt:pattern-test-fail "4294967296:0";
+    // Route Target Type 1 - route-target:<2b AS>:<4b local>
+    rt:pattern-test-fail "route-target:64";
+    rt:pattern-test-pass "route-target:65535:10";
+    rt:pattern-test-fail "route-TARGET:65535:10";
+    rt:pattern-test-fail "route-target:15169:4294967296";
+    rt:pattern-test-pass "route-target:15169:4294967295";
+    // Route Target Type 2 - route-target:<ipv4>:<2b local>
+    rt:pattern-test-fail "route-target:256.0.2.36:10";
+    rt:pattern-test-pass "route-target:192.0.2.1:10";
+    rt:pattern-test-fail "route-target:192.0.2.1:65536";
+    // Route Target w/ 4B AS:<2b local>
+    rt:pattern-test-pass "route-target:4294967295:10";
+    rt:pattern-test-fail "route-target:4294967296:10";
+    rt:pattern-test-pass "route-target:5413:65535";
+    // Route Origin Type 1 - route-target:<2b AS>:<4b local>
+    rt:pattern-test-fail "route-origin:53";
+    rt:pattern-test-pass "route-origin:65535:10";
+    rt:pattern-test-fail "route-ORIGINTRAIL:65535:10";
+    rt:pattern-test-fail "route-origin:15169:4294967296";
+    rt:pattern-test-pass "route-origin:15169:4294967295";
+    // Route Origin Type 2 - route-target:<ipv4>:<2b local>
+    rt:pattern-test-fail "route-origin:512.0.2.36:10";
+    rt:pattern-test-pass "route-origin:10.18.253.24:10";
+    rt:pattern-test-fail "route-origin:192.168.1.1:65536";
+    // Route Origin w/ 4B AS:<2b local>
+    rt:pattern-test-pass "route-origin:4294967295:5353";
+    rt:pattern-test-fail "route-origin:4294967296:9009";
+    rt:pattern-test-pass "route-origin:5413:65535";
+  }
+  leaf ipv6-address {
+    type ocinet:ipv6-address;
+    rt:pattern-test-pass "2620::1000:3202:23e:e1ff:fec7:7112";
+    rt:pattern-test-pass "fe80::23e:e1ff:fec7:7112";
+    rt:pattern-test-fail "fe80::23e:NOTVALID:fec7:7112";
+    rt:pattern-test-fail "FFFF::NOTE::FFFF";
+    rt:pattern-test-fail "FFFF::1::42";
+  }
+  leaf ipv4-prefix {
+    type ocinet:ipv4-prefix;
+    rt:pattern-test-pass "0.0.0.0/0";
+    rt:pattern-test-pass "255.255.255.255/32";
+    rt:pattern-test-fail "256.0.0.0/31";
+    rt:pattern-test-pass "1.2.3.0/24";
+    rt:pattern-test-fail "1.2.3.4/33";
+  }
+  leaf ipv6-prefix {
+    type ocinet:ipv6-prefix;
+    rt:pattern-test-pass "::/0";
+    rt:pattern-test-pass "FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF/128";
+    rt:pattern-test-fail "FFFF:FFFF:FFFF:NOTVALID:FFFF:FFFF:FFFF:FFFF/64";
+    rt:pattern-test-pass "2001:DB8::/32";
+    rt:pattern-test-fail "2001:4C20::/129";
+  }
+  leaf ip-prefix {
+    type ocinet:ip-prefix;
+    rt:pattern-test-pass "0.0.0.0/0";
+    rt:pattern-test-pass "192.0.2.1/32";
+    rt:pattern-test-fail "192.0.2.2/33";
+    rt:pattern-test-pass "FE80::CAFE/128";
+    rt:pattern-test-fail "FE81::CAFE:DEAD:BEEF/129";
+  }
+  leaf domain-name {
+    type ocinet:domain-name;
+    rt:pattern-test-pass "ambroseesorbma";
+    rt:pattern-test-fail "ambrose esorbma";
+    rt:pattern-test-pass "claire.";
+    rt:pattern-test-fail "~~~-+=.";
+    rt:pattern-test-fail "ambrose esorbma";
+    rt:pattern-test-pass "012345678901234567890123456789012345678901234567890123456789012.";
+    rt:pattern-test-fail "0123456789012345678901234567890123456789012345678901234567890123";
+  }
+}
