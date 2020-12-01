@@ -6,9 +6,7 @@ import optparse
 import re
 
 from pyang import plugin
-from pyang import statements
 from pyang import error
-from pyang import grammar
 from pyang.error import err_add
 
 from lxml import etree
