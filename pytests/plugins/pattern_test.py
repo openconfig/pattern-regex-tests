@@ -59,13 +59,13 @@ typedef_usage_stmt_regex = re.compile(r'([^\s:]+:)?([^\s:]+)')
 
 debug = False
 
-def is_pattern_test_pass(statement):
+def is_statement_pass_testcase(statement):
     try:
         return statement.keyword[1] == 'pattern-test-pass'
     except AttributeError:
         return False
 
-def is_pattern_test_fail(statement):
+def is_statement_fail_testcase(statement):
     try:
         return statement.keyword[1] == 'pattern-test-fail'
     except AttributeError:
@@ -190,57 +190,59 @@ def check_patterns(ctx, mods):
 </xsd:schema>"""
 
     for mod in mods:
+        # Build map of {import prefix: module name}
         prefix_to_mod_name = {}
         for s in mod.search("import"):
             prefix_to_mod_name[s.search_one("prefix").arg] = s.arg
 
         # LIMITATION: Only direct leaves can currently be tested.
-        for statement in mod.search("leaf"):
-            typestmt = statement.search_one("type")
+        for leaf in mod.search("leaf"):
+            typestmt = leaf.search_one("type")
             pattern_lists = dnf_patterns(ctx, typestmt, prefix_to_mod_name)
-
             if not pattern_lists:
                 err_add(ctx.errors, typestmt.pos, 'UNRESTRICTED_TYPE',
                         (typestmt.arg))
                 continue
 
-            has_test_pattern = False
-            for s in statement.substmts:
-                doc = etree.parse(StringIO("<val>{}</val>".format(s.arg)))
-                if is_pattern_test_pass(s):
-                    has_test_pattern = True
-                    has_match = False
+            has_at_least_one_test = False
+            for s in leaf.substmts:
+                xml_doc = etree.parse(StringIO("<val>{}</val>".format(s.arg)))
+                if is_statement_pass_testcase(s):
+                    # Check whether any minterm in the DNF is satisfied.
+                    has_at_least_one_test = True
                     for patterns in pattern_lists:
-                        matches = True
+                        minterm_matches = True
                         for pattern in patterns:
                             f = StringIO(xsd_doc_str.format(pattern))
                             xsd_doc = etree.parse(f)
                             xsd = etree.XMLSchema(xsd_doc)
-                            if not xsd.validate(doc):
+                            if not xsd.validate(xml_doc):
                                 if debug:
                                     print("{} doesn't match {}".format(s.arg, pattern))
-                                matches = False
+                                minterm_matches = False
                             elif debug:
                                 print("{} matches".format(s.arg))
-                        if matches:
-                            has_match = True
+                        if minterm_matches:
                             break
-                    if not has_match:
+                    else: # Exhausted all minterms.
                         err_add(ctx.errors, s.pos,
                                 'VALID_PATTERN_DOES_NOT_MATCH', (s.arg,
                                                                  typestmt.arg))
-                elif is_pattern_test_fail(s):
-                    has_test_pattern = True
+                elif is_statement_fail_testcase(s):
+                    # Check that no minterm in the DNF is satisfied.
+                    has_at_least_one_test = True
                     for patterns in pattern_lists:
+                        minterm_matches = True
                         for pattern in patterns:
                             f = StringIO(xsd_doc_str.format(pattern))
                             xsd_doc = etree.parse(f)
                             xsd = etree.XMLSchema(xsd_doc)
-                            if xsd.validate(doc):
-                                err_add(ctx.errors, s.pos,
-                                        'INVALID_PATTERN_MATCH', (s.arg,
-                                                                  typestmt.arg))
+                            if not xsd.validate(xml_doc):
+                                minterm_matches = False
+                        if minterm_matches:
+                            err_add(ctx.errors, s.pos, 'INVALID_PATTERN_MATCH',
+                                    (s.arg, typestmt.arg))
+                            break
 
-            if not has_test_pattern:
-                err_add(ctx.errors, statement.pos, 'NO_TEST_PATTERNS',
-                        (statement.arg))
+            if not has_at_least_one_test:
+                err_add(ctx.errors, leaf.pos, 'NO_TEST_PATTERNS', (leaf.arg))
