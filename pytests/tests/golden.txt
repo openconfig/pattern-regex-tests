@@ -1,0 +1,5 @@
+testdata/python-plugin-test.yang:34: error: invalid pattern "ipv4" matches typedef "string"
+testdata/python-plugin-test.yang:35: error: valid pattern "ipv6" does not match typedef "string"
+testdata/python-plugin-test.yang:37: error: leaf "ipv4-2" does not have any test cases
+testdata/python-plugin-test.yang:45: error: string type "string" is unrestricted
+testdata/python-plugin-test.yang:53: error: string type "string" is unrestricted
