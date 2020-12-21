@@ -1,0 +1,17 @@
+module union-leaf-fail {
+  prefix "slf";
+  namespace "urn:openconfig-regex-oc-test";
+
+  import pattern-test { prefix "pt"; }
+  import types { prefix "t"; }
+  import openconfig-extensions { prefix "oc-ext"; }
+
+  description
+    "contains gotest test cases for OpenConfig POSIX pattern statements";
+
+  leaf ipv-0 {
+    type t:ip-string-typedef;
+    pt:pattern-test-fail "ipv4";
+    pt:pattern-test-pass "ipv5";
+  }
+}
