@@ -30,4 +30,4 @@ jobs:
       run: git clone https://github.com/openconfig/oc-pyang.git
 
     - name: Run test
-      run: PYTHONPATH=$PYTHONPATH:oc-pyang pytests/tests/plugin_test.sh
+      run: stat oc-pyang && export PYTHONPATH=$PYTHONPATH:oc-pyang && pytests/tests/plugin_test.sh
