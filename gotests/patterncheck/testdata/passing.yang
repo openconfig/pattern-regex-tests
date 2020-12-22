@@ -32,7 +32,6 @@ module passing {
   leaf ipv-4 {
     type union {
       type string {
-        pattern 'ip[vV]4';
         oc-ext:posix-pattern 'ip[vV]4';
       }
       // Unrestricted union subtype.
@@ -75,7 +74,6 @@ module passing {
     type union {
       type t:ip-string-typedef;
       type string {
-        pattern 'ip[vV]5';
         oc-ext:posix-pattern 'ip[vV]5';
       }
       pt:pattern-test-pass "ipv4";
