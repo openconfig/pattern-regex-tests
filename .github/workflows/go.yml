@@ -1,4 +1,4 @@
-name: Go
+name: Go (posix-pattern)
 
 on:
   push:

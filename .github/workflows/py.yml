@@ -1,0 +1,22 @@
+name: pyang (XSD pattern statement)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: Set up pyang
+      run: pip3 install pyang
+
+    - name: Run test
+      run: pytests/pattern_test.sh
