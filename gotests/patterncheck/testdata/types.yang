@@ -9,14 +9,12 @@ module types {
 
   typedef ipv4-string {
     type string {
-      pattern 'ip[vV]4';
       oc-ext:posix-pattern 'ip[vV]4';
     }
   }
 
   typedef ipv6-string {
     type string {
-      pattern 'ip[vV]6';
       oc-ext:posix-pattern 'ip[vV]6';
     }
   }
