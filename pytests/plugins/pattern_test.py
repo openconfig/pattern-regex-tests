@@ -1,6 +1,7 @@
 """YANG test plugin for correctness of "pattern" statement regexes.
 """
 
+from enum import IntEnum
 from io import StringIO
 import optparse
 import re
