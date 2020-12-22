@@ -18,5 +18,8 @@ jobs:
     - name: Set up pyang
       run: pip3 install pyang
 
+    - name: Check out code
+      uses: actions/checkout@v2
+
     - name: Run test
       run: pytests/pattern_test.sh
