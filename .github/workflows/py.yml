@@ -26,8 +26,5 @@ jobs:
     - name: Set up pyang
       run: pip3 install pyang
 
-    - name: Set up oc-pyang
-      run: git clone https://github.com/openconfig/oc-pyang.git
-
     - name: Run test
-      run: PYTHONPATH=$PYTHONPATH:`pwd`/oc-pyang pytests/tests/plugin_test.sh
+      run: pytests/tests/plugin_test.sh
