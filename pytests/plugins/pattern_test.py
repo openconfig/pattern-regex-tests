@@ -8,6 +8,7 @@ import re
 from pyang import plugin
 from pyang import error
 from pyang.error import err_add
+from openconfig_pyang.plugins.openconfig import ErrorLevel
 
 from lxml import etree
 
@@ -39,22 +40,23 @@ class PatternTestPlugin(plugin.PyangPlugin):
             return
         # Test case failure states.
         error.add_error_code(
-            'VALID_PATTERN_DOES_NOT_MATCH', 2,
-            'valid pattern "%s" does not match typedef "%s"')
+            'VALID_PATTERN_DOES_NOT_MATCH', ErrorLevel.MAJOR,
+            'valid pattern "%s" does not match type "%s"')
         error.add_error_code(
-            'INVALID_PATTERN_MATCH', 2,
-            'invalid pattern "%s" matches typedef "%s"')
+            'INVALID_PATTERN_MATCH', ErrorLevel.MAJOR,
+            'invalid pattern "%s" matches type "%s"')
 
         # Error states.
         error.add_error_code(
-            'NO_TEST_PATTERNS', 1,
+            'NO_TEST_PATTERNS', ErrorLevel.CRITICAL,
             'leaf "%s" does not have any test cases')
         error.add_error_code(
-            'UNRESTRICTED_TYPE', 1,
-            'string type "%s" is unrestricted')
+            'UNRESTRICTED_TYPE', ErrorLevel.CRITICAL,
+            'leaf "%s" has unrestricted string type')
 
 typedef_usage_stmt_regex = re.compile(r'([^\s:]+:)?([^\s:]+)')
 
+# For logs while debugging this script.
 debug = False
 
 def is_statement_pass_testcase(statement):
@@ -113,18 +115,18 @@ def dnf_patterns_aux(ctx, typestmt, prefix_to_mod_name, patterns):
     pattern statements into the given patterns list. The "pattern" statement
     specification + YANG type hierarchy naturally makes each string type a
     minterm in the DNF, no matter how deeply nested it is inside a union.
+
+    # Documentation: https://tools.ietf.org/html/rfc7950#section-9.4.5
     """
     if typestmt.keyword != "type":
         return
 
-    # TODO(wenovus): Support patterns found in derived string types.
-    # See https://tools.ietf.org/html/rfc7950#section-9.4.5
+    new_patterns = typestmt.search("pattern")
     if typestmt.arg == "string":
-        new_patterns = typestmt.search("pattern")
         if not new_patterns:
-            # If we have a string type without restrictions, then there is no
-            # reason to have a test for the type.
-            err_add(ctx.errors, typestmt.pos, 'UNRESTRICTED_TYPE', (typestmt.arg))
+            # If we have a string type without restrictions, then still add an
+            # empty list, as derived types may add to it.
+            patterns.append([])
         else:
             # Each string type will form a minterm for the DNF.
             patterns.append([pat.arg for pat in new_patterns])
@@ -141,6 +143,11 @@ def dnf_patterns_aux(ctx, typestmt, prefix_to_mod_name, patterns):
     base_typestmt = typestmt_from_derived_typestmt(ctx, typestmt, prefix_to_mod_name)
     if base_typestmt:
         dnf_patterns_aux(ctx, base_typestmt, prefix_to_mod_name, patterns)
+
+    # If we have a derived string type, then simply add to the pattern(s) in the
+    # base string type.
+    if new_patterns:
+        patterns[-1].extend(pat.arg for pat in new_patterns)
 
 def typestmt_from_derived_typestmt(ctx, typestmt, prefix_to_mod_name):
     """typestmt_from_derived_typestmt retrieves the type statement from the
@@ -197,7 +204,14 @@ def check_patterns(ctx, mods):
         for leaf in mod.search("leaf"):
             typestmt = leaf.search_one("type")
             pattern_lists = dnf_patterns(ctx, typestmt, prefix_to_mod_name)
-            if not pattern_lists:
+            if debug:
+                print("{} has pattern DNF {}".format(leaf.arg, pattern_lists))
+            has_empty_pattern = False
+            for lst in pattern_lists:
+                if not lst:
+                    has_empty_pattern = True
+                    break
+            if not pattern_lists or has_empty_pattern:
                 err_add(ctx.errors, typestmt.pos, 'UNRESTRICTED_TYPE',
                         (typestmt.arg))
                 continue
