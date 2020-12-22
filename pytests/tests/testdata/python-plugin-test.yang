@@ -83,24 +83,24 @@ module python-plugin-test {
         pattern 'ip[vV]5';
       }
     }
-	// Good test cases.
-	pt:pattern-test-pass "ipv4";
-	pt:pattern-test-pass "ipv5";
-	pt:pattern-test-pass "ipV6";
-	// Bad test cases.
-	pt:pattern-test-fail "ipv4";
-	pt:pattern-test-pass "hehe";
-	pt:pattern-test-fail "ipV5";
-	pt:pattern-test-fail "ipv6";
+    // Good test cases.
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "ipv5";
+    pt:pattern-test-pass "ipV6";
+    // Bad test cases.
+    pt:pattern-test-fail "ipv4";
+    pt:pattern-test-pass "hehe";
+    pt:pattern-test-fail "ipV5";
+    pt:pattern-test-fail "ipv6";
   }
 
   // Derived string type.
   leaf ipv-9 {
     type t:ipv4-str;
-	// Good test cases.
-	pt:pattern-test-pass "ipv4";
-	pt:pattern-test-fail "ipV4";
-	// Bad test cases.
-	pt:pattern-test-pass "ipv6";
+    // Good test cases.
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-fail "ipV4";
+    // Bad test cases.
+    pt:pattern-test-pass "ipv6";
   }
 }

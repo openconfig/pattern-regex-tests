@@ -114,7 +114,8 @@ def dnf_patterns_aux(ctx, typestmt, prefix_to_mod_name, patterns):
     Recursively find the base string types of the given type, and append its
     pattern statements into the given patterns list. The "pattern" statement
     specification + YANG type hierarchy naturally makes each string type a
-    minterm in the DNF, no matter how deeply nested it is inside a union.
+    minterm in the DNF, no matter how deeply nested it is inside a union, and no
+    matter how many levels deep is a derived string type.
 
     # Documentation: https://tools.ietf.org/html/rfc7950#section-9.4.5
     """
