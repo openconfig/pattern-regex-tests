@@ -15,11 +15,11 @@ jobs:
       fail-fast: false
 
     steps:
-    - name: Set up pyang
-      run: pip3 install pyang
-
     - name: Check out code
       uses: actions/checkout@v2
 
+    - name: Set up pyang
+      run: pip3 install pyang
+
     - name: Run test
-      run: pytests/pattern_test.sh
+      run: pytests/tests/plugin_test.sh
