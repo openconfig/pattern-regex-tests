@@ -1,0 +1,106 @@
+module python-plugin-test {
+  prefix "ppt";
+  namespace "urn:openconfig-regex-plugin-test";
+
+  import pattern-test { prefix "pt"; }
+  import types { prefix "t"; }
+
+  description
+    "contains pyang plugin test cases for pattern statements";
+
+  leaf ipv4 {
+    type string {
+        pattern 'ip[vV]4';
+    }
+    // Good test cases.
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "ipV4";
+    pt:pattern-test-fail "ipv6";
+    // Bad test cases.
+    pt:pattern-test-fail "ipv4";
+    pt:pattern-test-pass "ipv6";
+  }
+  leaf ipv4-2 {
+    // No test cases.
+    type string {
+        pattern 'ip[vV]4';
+    }
+  }
+  leaf ipv4-3 {
+    // Unrestricted type.
+    type string;
+  }
+  leaf ipv4-4 {
+    type union {
+        type string {
+            pattern 'ip[vV]4';
+        }
+        // Unrestricted union subtype.
+        type string;
+    }
+    pt:pattern-test-pass "ipv4";
+  }
+
+  // Different types of unions.
+  leaf ipv-5 {
+    type union {
+      type t:ipv4-string;
+      type t:ipv6-string;
+    }
+    // Good test cases.
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "ipV6";
+    // Bad test cases.
+    pt:pattern-test-fail "ipv4";
+    pt:pattern-test-pass "ipv5";
+  }
+
+  leaf ipv-6 {
+    type t:ip-string;
+    // Good test cases.
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "ipV6";
+    // Bad test cases.
+    pt:pattern-test-fail "ipv4";
+    pt:pattern-test-pass "ipv5";
+  }
+
+  leaf ipv-7 {
+    type t:ip-string-typedef;
+    // Good test cases.
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "ipV6";
+    // Bad test cases.
+    pt:pattern-test-fail "ipv4";
+    pt:pattern-test-pass "ipv5";
+  }
+
+  // Nested union.
+  leaf ipv-8 {
+    type union {
+      type t:ip-string-typedef;
+      type string {
+        pattern 'ip[vV]5';
+      }
+    }
+    // Good test cases.
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "ipv5";
+    pt:pattern-test-pass "ipV6";
+    // Bad test cases.
+    pt:pattern-test-fail "ipv4";
+    pt:pattern-test-pass "hehe";
+    pt:pattern-test-fail "ipV5";
+    pt:pattern-test-fail "ipv6";
+  }
+
+  // Derived string type.
+  leaf ipv-9 {
+    type t:ipv4-str;
+    // Good test cases.
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-fail "ipV4";
+    // Bad test cases.
+    pt:pattern-test-pass "ipv6";
+  }
+}

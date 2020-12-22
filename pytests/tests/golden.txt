@@ -1,0 +1,16 @@
+testdata/python-plugin-test.yang:20: error: invalid pattern "ipv4" matches type "string"
+testdata/python-plugin-test.yang:21: error: valid pattern "ipv6" does not match type "string"
+testdata/python-plugin-test.yang:23: error: leaf "ipv4-2" does not have any test cases
+testdata/python-plugin-test.yang:31: error: leaf "string" has unrestricted string type
+testdata/python-plugin-test.yang:34: error: leaf "union" has unrestricted string type
+testdata/python-plugin-test.yang:54: error: invalid pattern "ipv4" matches type "union"
+testdata/python-plugin-test.yang:55: error: valid pattern "ipv5" does not match type "union"
+testdata/python-plugin-test.yang:64: error: invalid pattern "ipv4" matches type "t:ip-string"
+testdata/python-plugin-test.yang:65: error: valid pattern "ipv5" does not match type "t:ip-string"
+testdata/python-plugin-test.yang:74: error: invalid pattern "ipv4" matches type "t:ip-string-typedef"
+testdata/python-plugin-test.yang:75: error: valid pattern "ipv5" does not match type "t:ip-string-typedef"
+testdata/python-plugin-test.yang:91: error: invalid pattern "ipv4" matches type "union"
+testdata/python-plugin-test.yang:92: error: valid pattern "hehe" does not match type "union"
+testdata/python-plugin-test.yang:93: error: invalid pattern "ipV5" matches type "union"
+testdata/python-plugin-test.yang:94: error: invalid pattern "ipv6" matches type "union"
+testdata/python-plugin-test.yang:104: error: valid pattern "ipv6" does not match type "t:ipv4-str"
