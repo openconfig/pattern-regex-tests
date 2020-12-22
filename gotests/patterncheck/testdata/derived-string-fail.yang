@@ -1,0 +1,17 @@
+module derived-string-fail {
+  prefix "slf";
+  namespace "urn:openconfig-regex-oc-test";
+
+  import pattern-test { prefix "pt"; }
+  import types { prefix "t"; }
+  import openconfig-extensions { prefix "oc-ext"; }
+
+  description
+    "contains gotest test cases for OpenConfig POSIX pattern statements";
+
+  leaf ipv-0 {
+    type t:ipv4-address-str;
+    pt:pattern-test-pass "ipV4";
+    pt:pattern-test-fail "ipV4-address";
+  }
+}

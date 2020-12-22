@@ -1,0 +1,96 @@
+module passing {
+  prefix "p";
+  namespace "urn:openconfig-regex-oc-test";
+
+  import pattern-test { prefix "pt"; }
+  import types { prefix "t"; }
+  import openconfig-extensions { prefix "oc-ext"; }
+
+  description
+    "contains gotest test cases for OpenConfig POSIX pattern statements";
+
+  // Simple leaf
+  leaf ipv-0 {
+    type string {
+      oc-ext:posix-pattern 'ip[vV]4';
+    }
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "ipV4";
+    pt:pattern-test-fail "ipv6";
+  }
+  leaf ipv-2 {
+    // No test cases.
+    type string {
+      oc-ext:posix-pattern 'ip[vV]4';
+    }
+  }
+  leaf ipv-3 {
+    // Unrestricted type.
+    type string;
+    pt:pattern-test-pass "qwerty";
+  }
+  leaf ipv-4 {
+    type union {
+      type string {
+        oc-ext:posix-pattern 'ip[vV]4';
+      }
+      // Unrestricted union subtype.
+      type string;
+    }
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "qwerty";
+  }
+
+  // Different types of unions.
+  leaf ipv-5 {
+    type union {
+      type t:ipv4-string;
+      type t:ipv6-string;
+    }
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "ipv6";
+    pt:pattern-test-pass "ipV4";
+    pt:pattern-test-pass "ipV6";
+  }
+
+  leaf ipv-6 {
+    type t:ip-string;
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "ipv6";
+    pt:pattern-test-pass "ipV4";
+    pt:pattern-test-pass "ipV6";
+  }
+
+  leaf ipv-7 {
+    type t:ip-string-typedef;
+    pt:pattern-test-pass "ipv4";
+    pt:pattern-test-pass "ipv6";
+    pt:pattern-test-pass "ipV4";
+    pt:pattern-test-pass "ipV6";
+  }
+
+  // Nested union.
+  leaf ipv-8 {
+    type union {
+      type t:ip-string-typedef;
+      type string {
+        oc-ext:posix-pattern 'ip[vV]5';
+      }
+      pt:pattern-test-pass "ipv4";
+      pt:pattern-test-pass "ipv5";
+      pt:pattern-test-pass "ipv6";
+      pt:pattern-test-pass "ipV4";
+      pt:pattern-test-pass "ipV5";
+      pt:pattern-test-pass "ipV6";
+    }
+  }
+
+  // Derived string type.
+  leaf ipv-9 {
+    type t:ipv4-address-str;
+    pt:pattern-test-fail "ipv4";
+    pt:pattern-test-fail "ipV4";
+    pt:pattern-test-pass "ipv4-address";
+    pt:pattern-test-pass "ipV4-address";
+  }
+}
