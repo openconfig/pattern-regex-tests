@@ -18,6 +18,11 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+          python-version: '3.x'
+
     - name: Set up pyang
       run: pip3 install pyang
 
