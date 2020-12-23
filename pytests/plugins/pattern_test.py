@@ -1,6 +1,7 @@
 """YANG test plugin for correctness of "pattern" statement regexes.
 """
 
+from enum import IntEnum
 from io import StringIO
 import optparse
 import re
@@ -8,9 +9,24 @@ import re
 from pyang import plugin
 from pyang import error
 from pyang.error import err_add
-from openconfig_pyang.plugins.openconfig import ErrorLevel
 
 from lxml import etree
+
+class ErrorLevel(IntEnum):
+  """An enumeration of the Pyang error levels.
+
+     - Critical errors are those that are fatal for parsing.
+     - Major errors are used as those that cannot be suppressed, and
+       should result in the module failing submission checks.
+     - Minor errors are used as those that can be suppressed, if there
+       is a clear reason to break a convention.
+     - Warnings are simply statements that the user should be aware of
+       and should not result in submission failures.
+  """
+  CRITICAL = 1
+  MAJOR = 2
+  MINOR = 3
+  WARNING = 4
 
 def pyang_plugin_init():
     plugin.register_plugin(PatternTestPlugin())
