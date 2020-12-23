@@ -21,8 +21,8 @@ import (
 	"flag"
 
 	log "github.com/golang/glog"
-
 	"github.com/openconfig/pattern-regex-tests/gotests/patterncheck"
+	"github.com/openconfig/ygot/util"
 )
 
 var (
@@ -33,10 +33,16 @@ func main() {
 	flag.Parse()
 
 	if *modelRoot == "" {
-		log.Fatalf("Must supply model-root path")
+		log.Error("Must supply model-root path")
 	}
 
 	if err := patterncheck.CheckRegexps(flag.Args(), []string{*modelRoot}); err != nil {
-		log.Fatal(err)
+		if errors, ok := err.(util.Errors); ok {
+			for _, err := range errors {
+				log.Errorln(err)
+			}
+		} else {
+			log.Exit(err)
+		}
 	}
 }
