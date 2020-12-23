@@ -57,10 +57,10 @@ class PatternTestPlugin(plugin.PyangPlugin):
         # Test case failure states.
         error.add_error_code(
             'VALID_PATTERN_DOES_NOT_MATCH', ErrorLevel.MAJOR,
-            'valid pattern "%s" does not match type "%s"')
+            'type "%s" rejected valid pattern: "%s"')
         error.add_error_code(
             'INVALID_PATTERN_MATCH', ErrorLevel.MAJOR,
-            'invalid pattern "%s" matches type "%s"')
+            'type "%s" accepted invalid pattern: "%s"')
 
         # Error states.
         error.add_error_code(
@@ -255,8 +255,8 @@ def check_patterns(ctx, mods):
                             break
                     else: # Exhausted all minterms.
                         err_add(ctx.errors, s.pos,
-                                'VALID_PATTERN_DOES_NOT_MATCH', (s.arg,
-                                                                 typestmt.arg))
+                                'VALID_PATTERN_DOES_NOT_MATCH', (typestmt.arg,
+                                                                 s.arg,))
                 elif is_statement_fail_testcase(s):
                     # Check that no minterm in the DNF is satisfied.
                     has_at_least_one_test = True
@@ -270,7 +270,7 @@ def check_patterns(ctx, mods):
                                 minterm_matches = False
                         if minterm_matches:
                             err_add(ctx.errors, s.pos, 'INVALID_PATTERN_MATCH',
-                                    (s.arg, typestmt.arg))
+                                    (typestmt.arg, s.arg))
                             break
 
             if not has_at_least_one_test:
