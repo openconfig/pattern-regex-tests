@@ -1,16 +1,16 @@
-testdata/python-plugin-test.yang:20: error: type "string" accepted invalid pattern: "ipv4"
-testdata/python-plugin-test.yang:21: error: type "string" rejected valid pattern: "ipv6"
-testdata/python-plugin-test.yang:23: error: leaf "ipv4-2" does not have any test cases
-testdata/python-plugin-test.yang:31: error: leaf "string" has unrestricted string type
-testdata/python-plugin-test.yang:34: error: leaf "union" has unrestricted string type
-testdata/python-plugin-test.yang:54: error: type "union" accepted invalid pattern: "ipv4"
-testdata/python-plugin-test.yang:55: error: type "union" rejected valid pattern: "ipv5"
-testdata/python-plugin-test.yang:64: error: type "t:ip-string" accepted invalid pattern: "ipv4"
-testdata/python-plugin-test.yang:65: error: type "t:ip-string" rejected valid pattern: "ipv5"
-testdata/python-plugin-test.yang:74: error: type "t:ip-string-typedef" accepted invalid pattern: "ipv4"
-testdata/python-plugin-test.yang:75: error: type "t:ip-string-typedef" rejected valid pattern: "ipv5"
-testdata/python-plugin-test.yang:91: error: type "union" accepted invalid pattern: "ipv4"
-testdata/python-plugin-test.yang:92: error: type "union" rejected valid pattern: "hehe"
-testdata/python-plugin-test.yang:93: error: type "union" accepted invalid pattern: "ipV5"
-testdata/python-plugin-test.yang:94: error: type "union" accepted invalid pattern: "ipv6"
-testdata/python-plugin-test.yang:104: error: type "t:ipv4-str" rejected valid pattern: "ipv6"
+| 20 | `string` | `ipv4` matched but shouldn't |
+| 21 | `string` | `ipv6` did not match |
+| 23 | | leaf `ipv4-2` does not have any test cases |
+| 31 | | leaf `string` has unrestricted string type |
+| 34 | | leaf `union` has unrestricted string type |
+| 54 | `union` | `ipv4` matched but shouldn't |
+| 55 | `union` | `ipv5` did not match |
+| 64 | `t:ip-string` | `ipv4` matched but shouldn't |
+| 65 | `t:ip-string` | `ipv5` did not match |
+| 74 | `t:ip-string-typedef` | `ipv4` matched but shouldn't |
+| 75 | `t:ip-string-typedef` | `ipv5` did not match |
+| 91 | `union` | `ipv4` matched but shouldn't |
+| 92 | `union` | `hehe` did not match |
+| 93 | `union` | `ipV5` matched but shouldn't |
+| 94 | `union` | `ipv6` matched but shouldn't |
+| 104 | `t:ipv4-str` | `ipv6` did not match |

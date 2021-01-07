@@ -45,39 +45,42 @@ type RegexpTest struct {
 // CheckRegexps tests mock input data against a set of leaves that have pattern
 // test cases specified for them. It ensures that the regexp compiles as a
 // POSIX regular expression according to the OpenConfig style guide.
-func CheckRegexps(yangfiles, paths []string) error {
+func CheckRegexps(yangfiles, paths []string) ([]string, error) {
 	yangE, errs := yangutil.ProcessModules(yangfiles, paths)
 	if len(errs) != 0 {
-		return fmt.Errorf("could not parse modules: %v", errs)
+		return nil, fmt.Errorf("could not parse modules: %v", errs)
 	}
 	if len(yangE) == 0 {
-		return fmt.Errorf("did not parse any modules")
+		return nil, fmt.Errorf("did not parse any modules")
 	}
 
 	var errs2 util.Errors
+	var allFailMessages []string
 	for _, mod := range yangE {
 		for _, entry := range mod.Dir {
-			if err := checkEntryPatterns(entry); err != nil {
+			if failMessages, err := checkEntryPatterns(entry); err != nil {
 				errs2 = util.AppendErr(errs2, err)
+			} else {
+				allFailMessages = append(allFailMessages, failMessages...)
 			}
 		}
 	}
-	if len(errs2) == 0 {
-		return nil
+	if len(errs2) != 0 {
+		return nil, errs2
 	}
-	return errs2
+	return allFailMessages, nil
 }
 
-func checkEntryPatterns(entry *yang.Entry) error {
+func checkEntryPatterns(entry *yang.Entry) ([]string, error) {
 	if entry.Kind != yang.LeafEntry {
-		return nil
+		return nil, nil
 	}
 
 	if len(entry.Errors) != 0 {
-		return fmt.Errorf("entry had associated errors: %v", entry.Errors)
+		return nil, fmt.Errorf("entry had associated errors: %v", entry.Errors)
 	}
 
-	var errs util.Errors
+	var failMessages []string
 	for _, ext := range entry.Exts {
 		var wantMatch bool
 		switch {
@@ -93,7 +96,7 @@ func checkEntryPatterns(entry *yang.Entry) error {
 		if len(entry.Type.Type) == 0 {
 			var err error
 			if gotMatch, err = checkPatterns(ext.Argument, entry.Type.POSIXPattern); err != nil {
-				return err
+				return nil, err
 			}
 		} else {
 			// Handle unions.
@@ -107,26 +110,23 @@ func checkEntryPatterns(entry *yang.Entry) error {
 				}
 				matches, err := checkPatterns(ext.Argument, membertype.POSIXPattern)
 				if err != nil {
-					return err
+					return nil, err
 				}
 				gotMatch = gotMatch || matches
 			}
 		}
 
-		matchDesc := fmt.Sprintf("%q doesn't match type %s (leaf %s)", ext.Argument, entry.Type.Name, entry.Name)
-		if gotMatch {
-			matchDesc = fmt.Sprintf("%q matches type %s (leaf %s)", ext.Argument, entry.Type.Name, entry.Name)
+		matchDesc := fmt.Sprintf("| `%s` | `%s` | `%s` matched but shouldn't |", entry.Name, entry.Type.Name, ext.Argument)
+		if !gotMatch {
+			matchDesc = fmt.Sprintf("| `%s` | `%s` | `%s` did not match |", entry.Name, entry.Type.Name, ext.Argument)
 		}
 
 		if gotMatch != wantMatch {
-			errs = util.AppendErr(errs, fmt.Errorf("fail: %s", matchDesc))
+			failMessages = append(failMessages, matchDesc)
 		}
 		log.Infof("pass: %s", matchDesc)
 	}
-	if len(errs) == 0 {
-		return nil
-	}
-	return errs
+	return failMessages, nil
 }
 
 // checkPatterns compiles all given POSIX patterns, and returns true if

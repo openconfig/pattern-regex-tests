@@ -22,7 +22,6 @@ import (
 
 	log "github.com/golang/glog"
 	"github.com/openconfig/pattern-regex-tests/gotests/patterncheck"
-	"github.com/openconfig/ygot/util"
 )
 
 var (
@@ -36,13 +35,15 @@ func main() {
 		log.Error("Must supply model-root path")
 	}
 
-	if err := patterncheck.CheckRegexps(flag.Args(), []string{*modelRoot}); err != nil {
-		if errors, ok := err.(util.Errors); ok {
-			for _, err := range errors {
-				log.Errorln(err)
-			}
-		} else {
-			log.Exit(err)
+	failureMessages, err := patterncheck.CheckRegexps(flag.Args(), []string{*modelRoot})
+	if err != nil {
+		log.Exit(err)
+	}
+	if len(failureMessages) != 0 {
+		log.Errorln("| leaf | typedef | error |")
+		log.Errorln("| --- | --- | --- |")
+		for _, msg := range failureMessages {
+			log.Errorln(msg)
 		}
 	}
 }
