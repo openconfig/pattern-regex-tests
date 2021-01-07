@@ -48,7 +48,7 @@ jobs:
       run: pip3 install pyang
 
     - name: Get public repo
-      run: git clone git@github.com:openconfig/public.git /go/src/github.com/openconfig/public
+      run: git clone git@github.com:openconfig/public.git ~/tmp/public
 
     - name: Run test
-      run: OCDIR=/go/src/github.com/openconfig/public pytests/pattern_test.sh
+      run: OCDIR=~/tmp/public pytests/pattern_test.sh
