@@ -1,0 +1,63 @@
+name: Demo on openconfig/public
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  pattern:
+    name: pattern statement
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+          python-version: '3.x'
+
+    - name: Set up pyang
+      run: pip3 install pyang
+
+    - name: Get public repo
+      run: git clone https://github.com/openconfig/public.git ~/tmp/public
+
+    - name: Demo output on openconfig/public
+      run: |
+          OCDIR=~/tmp/public pytests/pattern_test.sh
+
+  posix-pattern:
+    name: posix-pattern statement
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      # Use default go version so that we don't have to update it every time a new one comes out.
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        go get -v -t -d ./...
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Get public repo
+      run: git clone https://github.com/openconfig/public.git ~/tmp/public
+
+    - name: Demo output on openconfig/public
+      run: |
+          go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang

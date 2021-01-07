@@ -28,27 +28,3 @@ jobs:
 
     - name: Run test
       run: pytests/tests/plugin_test.sh
-
-  demo:
-    name: Demo
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-          python-version: '3.x'
-
-    - name: Set up pyang
-      run: pip3 install pyang
-
-    - name: Get public repo
-      run: git clone https://github.com/openconfig/public.git ~/tmp/public
-
-    - name: Run test
-      run: OCDIR=~/tmp/public pytests/pattern_test.sh
