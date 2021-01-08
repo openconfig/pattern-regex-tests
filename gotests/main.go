@@ -19,6 +19,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"os"
 
 	log "github.com/golang/glog"
 	"github.com/openconfig/pattern-regex-tests/gotests/patterncheck"
@@ -31,6 +33,11 @@ var (
 func main() {
 	flag.Parse()
 
+	code := 0
+	defer func() {
+		os.Exit(code)
+	}()
+
 	if *modelRoot == "" {
 		log.Error("Must supply model-root path")
 	}
@@ -40,10 +47,11 @@ func main() {
 		log.Exit(err)
 	}
 	if len(failureMessages) != 0 {
-		log.Errorln("| leaf | typedef | error |")
-		log.Errorln("| --- | --- | --- |")
+		code = 1
+		fmt.Fprintln(os.Stderr, "| leaf | typedef | error |")
+		fmt.Fprintln(os.Stderr, "| --- | --- | --- |")
 		for _, msg := range failureMessages {
-			log.Errorln(msg)
+			fmt.Fprintln(os.Stderr, msg)
 		}
 	}
 }

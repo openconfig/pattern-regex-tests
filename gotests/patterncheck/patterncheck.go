@@ -26,8 +26,8 @@ import (
 )
 
 var (
-	passCaseExt = regexp.MustCompile(`\w:pattern-test-pass`)
-	failCaseExt = regexp.MustCompile(`\w:pattern-test-fail`)
+	passCaseExt = regexp.MustCompile(`\w+:pattern-test-pass`)
+	failCaseExt = regexp.MustCompile(`\w+:pattern-test-fail`)
 )
 
 // YANGLeaf is a structure used to describe a particular leaf of YANG schema.
