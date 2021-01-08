@@ -54,19 +54,19 @@ func CheckRegexps(yangfiles, paths []string) ([]string, error) {
 		return nil, fmt.Errorf("did not parse any modules")
 	}
 
-	var errs2 util.Errors
+	var patternErrs util.Errors
 	var allFailMessages []string
 	for _, mod := range yangE {
 		for _, entry := range mod.Dir {
 			if failMessages, err := checkEntryPatterns(entry); err != nil {
-				errs2 = util.AppendErr(errs2, err)
+				patternErrs = util.AppendErr(patternErrs, err)
 			} else {
 				allFailMessages = append(allFailMessages, failMessages...)
 			}
 		}
 	}
-	if len(errs2) != 0 {
-		return nil, errs2
+	if len(patternErrs) != 0 {
+		return nil, patternErrs
 	}
 	return allFailMessages, nil
 }
