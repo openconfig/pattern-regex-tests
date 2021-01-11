@@ -28,6 +28,7 @@ jobs:
       run: git clone https://github.com/openconfig/public.git ~/tmp/public
 
     - name: Demo output on openconfig/public
+      continue-on-error: true
       run: |
           OCDIR=~/tmp/public pytests/pattern_test.sh
 
@@ -57,5 +58,6 @@ jobs:
       run: git clone https://github.com/openconfig/public.git ~/tmp/public
 
     - name: Demo output on openconfig/public
+      continue-on-error: true
       run: |
           go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang
