@@ -19,10 +19,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"os"
 
 	log "github.com/golang/glog"
 	"github.com/openconfig/pattern-regex-tests/gotests/patterncheck"
-	"github.com/openconfig/ygot/util"
 )
 
 var (
@@ -32,17 +33,25 @@ var (
 func main() {
 	flag.Parse()
 
+	code := 0
+	defer func() {
+		os.Exit(code)
+	}()
+
 	if *modelRoot == "" {
 		log.Error("Must supply model-root path")
 	}
 
-	if err := patterncheck.CheckRegexps(flag.Args(), []string{*modelRoot}); err != nil {
-		if errors, ok := err.(util.Errors); ok {
-			for _, err := range errors {
-				log.Errorln(err)
-			}
-		} else {
-			log.Exit(err)
+	failureMessages, err := patterncheck.CheckRegexps(flag.Args(), []string{*modelRoot})
+	if err != nil {
+		log.Exit(err)
+	}
+	if len(failureMessages) != 0 {
+		code = 1
+		fmt.Fprintln(os.Stderr, "| leaf | typedef | error |")
+		fmt.Fprintln(os.Stderr, "| --- | --- | --- |")
+		for _, msg := range failureMessages {
+			fmt.Fprintln(os.Stderr, msg)
 		}
 	}
 }

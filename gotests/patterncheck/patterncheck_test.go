@@ -17,7 +17,7 @@ package patterncheck
 import (
 	"testing"
 
-	"github.com/openconfig/gnmi/errdiff"
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestCheckRegexps(t *testing.T) {
@@ -25,32 +25,44 @@ func TestCheckRegexps(t *testing.T) {
 		desc             string
 		inFiles          []string
 		inPaths          []string
-		wantErrSubstring string
+		wantFailMessages []string
 	}{{
 		desc:    "passing cases",
 		inFiles: []string{"testdata/passing.yang"},
 		inPaths: []string{"../../testdata"},
 	}, {
-		desc:             "simple leaf fail",
-		inFiles:          []string{"testdata/simple-leaf-fail.yang"},
-		inPaths:          []string{"../../testdata"},
-		wantErrSubstring: `"ipv4" matches type string (leaf ipv-0), fail: "ipv6" doesn't match type string (leaf ipv-0)`,
+		desc:    "simple leaf fail",
+		inFiles: []string{"testdata/simple-leaf-fail.yang"},
+		inPaths: []string{"../../testdata"},
+		wantFailMessages: []string{
+			"| `ipv-0` | `string` | `ipv4` matched but shouldn't |",
+			"| `ipv-0` | `string` | `ipv6` did not match |",
+		},
 	}, {
-		desc:             "union leaf fail",
-		inFiles:          []string{"testdata/union-leaf-fail.yang"},
-		inPaths:          []string{"../../testdata"},
-		wantErrSubstring: `fail: "ipv4" matches type ip-string-typedef (leaf ipv-0), fail: "ipv5" doesn't match type ip-string-typedef (leaf ipv-0)`,
+		desc:    "union leaf fail",
+		inFiles: []string{"testdata/union-leaf-fail.yang"},
+		inPaths: []string{"../../testdata"},
+		wantFailMessages: []string{
+			"| `ipv-0` | `ip-string-typedef` | `ipv4` matched but shouldn't |",
+			"| `ipv-0` | `ip-string-typedef` | `ipv5` did not match |",
+		},
 	}, {
-		desc:             "derived string type fail",
-		inFiles:          []string{"testdata/derived-string-fail.yang"},
-		inPaths:          []string{"../../testdata"},
-		wantErrSubstring: `fail: "ipV4" doesn't match type ipv4-address-str (leaf ipv-0), fail: "ipV4-address" matches type ipv4-address-str (leaf ipv-0)`,
+		desc:    "derived string type fail",
+		inFiles: []string{"testdata/derived-string-fail.yang"},
+		inPaths: []string{"../../testdata"},
+		wantFailMessages: []string{
+			"| `ipv-0` | `ipv4-address-str` | `ipV4` did not match |",
+			"| `ipv-0` | `ipv4-address-str` | `ipV4-address` matched but shouldn't |",
+		},
 	}}
 
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
-			got := CheckRegexps(tt.inFiles, tt.inPaths)
-			if diff := errdiff.Substring(got, tt.wantErrSubstring); diff != "" {
+			got, err := CheckRegexps(tt.inFiles, tt.inPaths)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if diff := cmp.Diff(got, tt.wantFailMessages); diff != "" {
 				t.Errorf("(-got, +want):\n%s", diff)
 			}
 		})

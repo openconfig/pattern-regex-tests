@@ -5,7 +5,7 @@ REPO_DIR="$TEST_DIR/../.."
 cwd=$PWD
 cd $TEST_DIR
 
-pyang -p "$REPO_DIR/testdata" -p "testdata" --plugindir "$REPO_DIR/pytests/plugins" --check-patterns "testdata/python-plugin-test.yang" 2>&1 | diff - "golden.txt"
+pyang -p "$REPO_DIR/testdata" -p "testdata" --msg-template="| {line} | {msg} |" --plugindir "$REPO_DIR/pytests/plugins" --check-patterns "testdata/python-plugin-test.yang" 2>&1 | diff - "golden.txt"
 retcode=$?
 
 cd $cwd

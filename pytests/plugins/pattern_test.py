@@ -57,18 +57,18 @@ class PatternTestPlugin(plugin.PyangPlugin):
         # Test case failure states.
         error.add_error_code(
             'VALID_PATTERN_DOES_NOT_MATCH', ErrorLevel.MAJOR,
-            'type "%s" rejected valid pattern: "%s"')
+            '`%s` | `%s` did not match')
         error.add_error_code(
             'INVALID_PATTERN_MATCH', ErrorLevel.MAJOR,
-            'type "%s" accepted invalid pattern: "%s"')
+            '`%s` | `%s` matched but shouldn\'t')
 
         # Error states.
         error.add_error_code(
             'NO_TEST_PATTERNS', ErrorLevel.CRITICAL,
-            'leaf "%s" does not have any test cases')
+            '| leaf `%s` does not have any test cases')
         error.add_error_code(
             'UNRESTRICTED_TYPE', ErrorLevel.CRITICAL,
-            'leaf "%s" has unrestricted string type')
+            '| leaf `%s` has unrestricted string type')
 
 typedef_usage_stmt_regex = re.compile(r'([^\s:]+:)?([^\s:]+)')
 

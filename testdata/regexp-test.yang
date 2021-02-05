@@ -16,6 +16,20 @@ module regexp-test {
     pt:pattern-test-fail "1.1.1.256";
     pt:pattern-test-fail "256.1.1.1%eth0";
   }
+  leaf ipv4-address-zoned {
+    type ocinet:ipv4-address-zoned;
+    pt:pattern-test-pass "255.1.1.1%eth0";
+    pt:pattern-test-pass "255.255.255.255%eth1";
+    pt:pattern-test-pass "0.0.0.0%PoRt3";
+    pt:pattern-test-pass "1.1.1.1%FOX10_mouse5";
+    pt:pattern-test-fail "255.1.1.1%";
+    pt:pattern-test-fail "255.255.255.255";
+    pt:pattern-test-fail "0.0.0.0";
+    pt:pattern-test-fail "1.1.1.1";
+    pt:pattern-test-fail "256.255.255.255";
+    pt:pattern-test-fail "1.1.1.256";
+    pt:pattern-test-fail "256.1.1.1%eth0";
+  }
   leaf ip-address {
     type ocinet:ip-address;
     pt:pattern-test-pass "255.255.255.255";
