@@ -59,5 +59,40 @@ jobs:
 
     - name: Demo output on openconfig/public
       continue-on-error: true
+      id: demo
       run: |
-          go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang
+          go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang &> output
+          status=$?
+          message="## Result of POSIX test cases on openconfig/public\n"
+          if [ "$status" -eq "0" ]; then
+            message+="${message}all tests passed"
+            echo ::set-output name=message::$message
+          else
+            message+="${message}failing test cases:\n${output}"
+            echo ::set-output name=message::$message
+          fi
+
+    - name: Find Comment
+      uses: peter-evans/find-comment@v1
+      id: fc-posix
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'OpenConfigBot'
+        body-includes: '## Result of POSIX test cases on openconfig/public'
+
+    - name: Create comment
+      if: steps.fc-posix.outputs.comment-id == ''
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          ${{ steps.demo.outputs.message }}
+
+    - name: Update comment
+      if: steps.fc-posix.outputs.comment-id != ''
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        body: |
+          ${{ steps.demo.outputs.message }}
+
