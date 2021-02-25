@@ -64,9 +64,9 @@ jobs:
           title="### Test Results on openconfig/public"
           echo ::set-output name=title::$title
 
-          echo "<1>"
-          echo ::set-output name=message::$(go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang)
-          echo "<2>"
+          echo ::set-output name=message::$(go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang 2>&1)
+          status=$?
+          echo "$status"
 
           if [ "$status" -eq "0" ]; then
             message="all tests passed"
