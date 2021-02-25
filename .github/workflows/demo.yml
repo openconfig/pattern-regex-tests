@@ -85,12 +85,16 @@ jobs:
       uses: peter-evans/create-or-update-comment@v1
       with:
         issue-number: ${{ github.event.pull_request.number }}
-        body: ${{ steps.demo.outputs.message }}
+        body: |
+          Test output
+          ${{ steps.demo.outputs.message }}
 
     - name: Update comment
       if: steps.fc-posix.outputs.comment-id != ''
       uses: peter-evans/create-or-update-comment@v1
       with:
         comment-id: ${{ steps.fc.outputs.comment-id }}
-        body: ${{ steps.demo.outputs.message }}
+        body: |
+          Test output
+          ${{ steps.demo.outputs.message }}
 
