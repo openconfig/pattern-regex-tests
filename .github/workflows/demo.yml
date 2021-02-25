@@ -63,7 +63,7 @@ jobs:
       run: |
           go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang &> output
           status=$?
-          title="## Result of POSIX test cases on openconfig/public"
+          title="### Test Results on openconfig/public"
           echo ::set-output name=title::$title
           if [ "$status" -eq "0" ]; then
             message="all tests passed"
