@@ -63,12 +63,12 @@ jobs:
       run: |
           go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang &> output
           status=$?
-          message="## Result of POSIX test cases on openconfig/public\n"
+          message="## Result of POSIX test cases on openconfig/public"
           if [ "$status" -eq "0" ]; then
-            message+="${message}all tests passed"
+            message=$(printf "${message}\nall tests passed")
             echo ::set-output name=message::$message
           else
-            message+="${message}failing test cases:\n${output}"
+            message=$(printf "${message}\nfailing test cases:\n${output}"
             echo ::set-output name=message::$message
           fi
 
