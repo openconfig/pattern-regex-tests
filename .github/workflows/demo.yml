@@ -65,6 +65,10 @@ jobs:
           echo "::set-output name=title::$title"
 
           output=$(go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang 2>&1) || status=$?
+          # https://github.community/t/set-output-truncates-multiline-strings/16852
+          output="${output//'%'/'%25'}"
+          output="${output//$'\n'/'%0A'}"
+          output="${output//$'\r'/'%0D'}"
           echo "::set-output name=message::$output"
 
           if [ "$status" -eq "0" ]; then
