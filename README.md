@@ -8,8 +8,8 @@ using [goyang](https://github.com/openconfig/goyang).
 ## How to Contribute to this Repository
 
 Pattern statement tests reside in the `regexp-test` module in the
-[regexp-test](regexp-test) folder. Currently, all tests reside in
-regexp-test.yang, but submodules can be created to include more tests.
+[testdata](testdata) folder. Currently, all tests reside in regexp-test.yang,
+but submodules can be created to include more tests.
 
 ## Releases
 
