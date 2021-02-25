@@ -63,15 +63,11 @@ jobs:
       run: |
           go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang &> output
           status=$?
-          message="## Result of POSIX test cases on openconfig/public"
           if [ "$status" -eq "0" ]; then
-            message="${message}\
-                     all tests passed"
+            message="all tests passed"
             echo ::set-output name=message::$message
           else
-            message="${message}\
-                     failing test cases:\
-                     ${output}"
+            message="${output}"
             echo ::set-output name=message::$message
           fi
 
@@ -89,6 +85,7 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
+          "## Result of POSIX test cases on openconfig/public"
           ${{ steps.demo.outputs.message }}
 
     - name: Update comment
@@ -97,5 +94,6 @@ jobs:
       with:
         comment-id: ${{ steps.fc.outputs.comment-id }}
         body: |
+          "## Result of POSIX test cases on openconfig/public"
           ${{ steps.demo.outputs.message }}
 
