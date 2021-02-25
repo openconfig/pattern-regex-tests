@@ -61,9 +61,6 @@ jobs:
       continue-on-error: true
       id: demo
       run: |
-          title="### Test Results on openconfig/public"
-          echo "::set-output name=title::$title"
-
           out=$(go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang 2>&1) || status=$?
           # https://github.community/t/set-output-truncates-multiline-strings/16852
           out="${out//'%'/'%25'}"
@@ -82,7 +79,7 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
-        body-includes: Test Results on openconfig/public
+        body-includes: '### Test Results on openconfig/public'
 
     - name: Create or update comment
       uses: peter-evans/create-or-update-comment@v1
@@ -90,6 +87,6 @@ jobs:
         comment-id: ${{ steps.fc.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          ${{ steps.demo.outputs.title }}
+          '### Test Results on openconfig/public'
           ${{ steps.demo.outputs.message }}
         edit-mode: replace
