@@ -5,12 +5,11 @@ using a [pyang](https://github.com/mbj4668/pyang) plugin and
 [oc-ext:posix-pattern](https://github.com/openconfig/public/blob/master/release/models/openconfig-extensions.yang#L114)
 using [goyang](https://github.com/openconfig/goyang).
 
-## Demo CI Workflow
+## How to Contribute to this Repository
 
-There is a demo CI workflow that runs on Pull Requests. They are used to demo
-the result of running the tests on the current YANG models. If they cause an
-expected test failure (perhaps because you added an uncaught corner case), it
-will not block merge and a minor version increment will be given.
+Pattern statement tests reside in the `regexp-test` module in the
+[regexp-test](regexp-test) folder. Currently, all tests reside in
+regexp-test.yang, but submodules can be created to include more tests.
 
 ## Releases
 
@@ -20,6 +19,13 @@ pattern regex), then the minor version must be incremented.
 
 At this time, major version updates are not anticipated, but could occur as a
 result of major changes to the repository.
+
+### Demo CI Workflow
+
+There is a demo CI workflow that runs on Pull Requests. They are used to demo
+the result of running the tests on the current openconfig/public YANG models.
+It's possible test failure are expected (e.g. wrong existing pattern). If this
+is the case a minor version increment should be given.
 
 --------------------------------------------------------------------------------
 
