@@ -65,10 +65,13 @@ jobs:
           status=$?
           message="## Result of POSIX test cases on openconfig/public"
           if [ "$status" -eq "0" ]; then
-            message=$(printf "${message}\nall tests passed")
+            message="${message}\
+                     all tests passed")
             echo ::set-output name=message::$message
           else
-            message=$(printf "${message}\nfailing test cases:\n${output}"
+            message="${message}\
+                     failing test cases:\
+                     ${output}"
             echo ::set-output name=message::$message
           fi
 
@@ -86,7 +89,6 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          Test output
           ${{ steps.demo.outputs.message }}
 
     - name: Update comment
@@ -95,6 +97,5 @@ jobs:
       with:
         comment-id: ${{ steps.fc.outputs.comment-id }}
         body: |
-          Test output
           ${{ steps.demo.outputs.message }}
 
