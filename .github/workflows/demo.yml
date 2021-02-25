@@ -61,20 +61,16 @@ jobs:
       continue-on-error: true
       id: demo
       run: |
-          echo "<1>"
-          go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang &> output
-          status=$?
-          echo "<2>"
           title="### Test Results on openconfig/public"
           echo ::set-output name=title::$title
-          echo "<3>"
+
+          echo "<1>"
+          echo ::set-output name=message::$(go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang)
+          echo "<2>"
+
           if [ "$status" -eq "0" ]; then
             message="all tests passed"
             echo ::set-output name=message::$message
-            echo "<4>"
-          else
-            echo ::set-output name=message::$(cat output)
-            echo "<5>"
           fi
 
     - name: Find Comment
