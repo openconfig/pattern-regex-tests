@@ -66,7 +66,7 @@ jobs:
           message="## Result of POSIX test cases on openconfig/public"
           if [ "$status" -eq "0" ]; then
             message="${message}\
-                     all tests passed")
+                     all tests passed"
             echo ::set-output name=message::$message
           else
             message="${message}\
