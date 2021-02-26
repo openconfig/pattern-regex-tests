@@ -32,11 +32,12 @@ jobs:
       id: demo
       run: |
           title="### XSD Demo Test Results on openconfig/public"
+          status=0
           out=$(OCDIR=~/tmp/public pytests/pattern_test.sh 2>&1) || status=$?
           if [ "$status" -eq "0" ]; then
             out="all tests passed"
           fi
-          message="${title}%0A${out}"
+          message="${title}\n${out}"
           echo "$message"
           # https://github.community/t/set-output-truncates-multiline-strings/16852
           message="${message//'%'/'%25'}"
@@ -91,11 +92,12 @@ jobs:
       id: demo
       run: |
           title="### POSIX demo test results on openconfig/public"
+          status=0
           out=$(go run gotests/main.go -model-root ~/tmp/public testdata/*.yang 2>&1) || status=$?
           if [ "$status" -eq "0" ]; then
             out="all tests passed"
           fi
-          message="${title}%0A${out}"
+          message="${title}\n${out}"
           echo "$message"
           # https://github.community/t/set-output-truncates-multiline-strings/16852
           message="${message//'%'/'%25'}"
