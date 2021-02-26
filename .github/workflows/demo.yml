@@ -59,7 +59,7 @@ jobs:
         comment-id: ${{ steps.fc-xsd.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          ${{ steps.demo.outputs.title }}
+          XSD Demo Test Results on openconfig/public
           ${{ steps.demo.outputs.message }}
         edit-mode: replace
 
@@ -92,7 +92,7 @@ jobs:
       continue-on-error: true
       id: demo
       run: |
-          title="### POSIX Demo Test Results on openconfig/public"
+          title="### posix demo test results on openconfig/public"
           echo "::set-output name=message::$title"
           out=$(go run gotests/main.go -model-root ~/tmp/public testdata/*.yang 2>&1) || status=$?
           # https://github.community/t/set-output-truncates-multiline-strings/16852
@@ -120,6 +120,6 @@ jobs:
         comment-id: ${{ steps.fc-posix.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          ${{ steps.demo.outputs.title }}
+          POSIX Demo Test Results on openconfig/public
           ${{ steps.demo.outputs.message }}
         edit-mode: replace
