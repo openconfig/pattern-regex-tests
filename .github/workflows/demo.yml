@@ -36,7 +36,8 @@ jobs:
           if [ "$status" -eq "0" ]; then
             out="all tests passed"
           fi
-          message="${title}\n${out}"
+          message="${title}%0A${out}"
+          echo "$message"
           # https://github.community/t/set-output-truncates-multiline-strings/16852
           message="${message//'%'/'%25'}"
           message="${message//$'\n'/'%0A'}"
@@ -94,7 +95,8 @@ jobs:
           if [ "$status" -eq "0" ]; then
             out="all tests passed"
           fi
-          message="${title}\n${out}"
+          message="${title}%0A${out}"
+          echo "$message"
           # https://github.community/t/set-output-truncates-multiline-strings/16852
           message="${message//'%'/'%25'}"
           message="${message//$'\n'/'%0A'}"
