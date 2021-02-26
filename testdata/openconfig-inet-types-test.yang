@@ -7,7 +7,7 @@ module openconfig-inet-types-test {
 
   leaf ipv4-address {
     type ocinet:ipv4-address;
-    pt:pattern-test-pass "255.255.255.256";
+    pt:pattern-test-pass "255.255.255.255";
     pt:pattern-test-pass "0.0.0.0";
     pt:pattern-test-pass "1.1.1.1";
     pt:pattern-test-fail "256.255.255.255";
