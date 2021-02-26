@@ -32,18 +32,16 @@ jobs:
       id: demo
       run: |
           title="### XSD Demo Test Results on openconfig/public"
-          echo "::set-output name=message::$title"
           out=$(OCDIR=~/tmp/public pytests/pattern_test.sh 2>&1) || status=$?
-          # https://github.community/t/set-output-truncates-multiline-strings/16852
-          out="${out//'%'/'%25'}"
-          out="${out//$'\n'/'%0A'}"
-          out="${out//$'\r'/'%0D'}"
-          echo "::set-output name=message::$out"
-
           if [ "$status" -eq "0" ]; then
-            message="all tests passed"
-            echo "::set-output name=message::$message"
+            out="all tests passed"
           fi
+          message="${title}\n${out}"
+          # https://github.community/t/set-output-truncates-multiline-strings/16852
+          message="${message//'%'/'%25'}"
+          message="${message//$'\n'/'%0A'}"
+          message="${message//$'\r'/'%0D'}"
+          echo "::set-output name=message::$message"
 
     - name: Find Comment
       uses: peter-evans/find-comment@v1
@@ -59,7 +57,6 @@ jobs:
         comment-id: ${{ steps.fc-xsd.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          XSD Demo Test Results on openconfig/public
           ${{ steps.demo.outputs.message }}
         edit-mode: replace
 
@@ -92,19 +89,17 @@ jobs:
       continue-on-error: true
       id: demo
       run: |
-          title="### posix demo test results on openconfig/public"
-          echo "::set-output name=message::$title"
+          title="### POSIX demo test results on openconfig/public"
           out=$(go run gotests/main.go -model-root ~/tmp/public testdata/*.yang 2>&1) || status=$?
-          # https://github.community/t/set-output-truncates-multiline-strings/16852
-          out="${out//'%'/'%25'}"
-          out="${out//$'\n'/'%0A'}"
-          out="${out//$'\r'/'%0D'}"
-          echo "::set-output name=message::$out"
-
           if [ "$status" -eq "0" ]; then
-            message="all tests passed"
-            echo "::set-output name=message::$message"
+            out="all tests passed"
           fi
+          message="${title}\n${out}"
+          # https://github.community/t/set-output-truncates-multiline-strings/16852
+          message="${message//'%'/'%25'}"
+          message="${message//$'\n'/'%0A'}"
+          message="${message//$'\r'/'%0D'}"
+          echo "::set-output name=message::$message"
 
     - name: Find Comment
       uses: peter-evans/find-comment@v1
@@ -120,6 +115,5 @@ jobs:
         comment-id: ${{ steps.fc-posix.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          POSIX Demo Test Results on openconfig/public
           ${{ steps.demo.outputs.message }}
         edit-mode: replace
