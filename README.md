@@ -7,9 +7,14 @@ using [goyang](https://github.com/openconfig/goyang).
 
 ## How to Contribute to this Repository
 
-Pattern statement tests reside in the `regexp-test` module in the
-[testdata](testdata) folder. Currently, all tests reside in regexp-test.yang,
-but submodules can be created to include more tests.
+Pattern statement tests reside in various modules in the [testdata](testdata)
+folder. When adding tests, group pattern tests in test modules named after where
+the patterns are found.
+
+### Limitations
+
+Only typedef tests are currently supported. The current OpenConfig models only
+contain patterns in typedef statements.
 
 ## Releases
 

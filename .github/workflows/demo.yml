@@ -29,8 +29,37 @@ jobs:
 
     - name: Demo output on openconfig/public
       continue-on-error: true
+      id: demo
       run: |
-          OCDIR=~/tmp/public pytests/pattern_test.sh
+          out=$(OCDIR=~/tmp/public pytests/pattern_test.sh 2>&1) || status=$?
+          # https://github.community/t/set-output-truncates-multiline-strings/16852
+          out="${out//'%'/'%25'}"
+          out="${out//$'\n'/'%0A'}"
+          out="${out//$'\r'/'%0D'}"
+          echo "::set-output name=message::$out"
+
+          if [ "$status" -eq "0" ]; then
+            message="all tests passed"
+            echo "::set-output name=message::$message"
+          fi
+
+    - name: Find Comment
+      uses: peter-evans/find-comment@v1
+      id: fc-xsd
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: '### XSD Demo Test Results on openconfig/public'
+
+    - name: Create or update comment
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        comment-id: ${{ steps.fc-xsd.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          '### XSD Demo Test Results on openconfig/public'
+          ${{ steps.demo.outputs.message }}
+        edit-mode: replace
 
   posix-pattern:
     name: posix-pattern statement
@@ -61,7 +90,7 @@ jobs:
       continue-on-error: true
       id: demo
       run: |
-          out=$(go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang 2>&1) || status=$?
+          out=$(go run gotests/main.go -model-root ~/tmp/public testdata/*.yang 2>&1) || status=$?
           # https://github.community/t/set-output-truncates-multiline-strings/16852
           out="${out//'%'/'%25'}"
           out="${out//$'\n'/'%0A'}"
@@ -79,14 +108,14 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
-        body-includes: '### Test Results on openconfig/public'
+        body-includes: '### POSIX Demo Test Results on openconfig/public'
 
     - name: Create or update comment
       uses: peter-evans/create-or-update-comment@v1
       with:
-        comment-id: ${{ steps.fc.outputs.comment-id }}
+        comment-id: ${{ steps.fc-posix.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          '### Test Results on openconfig/public'
+          '### POSIX Demo Test Results on openconfig/public'
           ${{ steps.demo.outputs.message }}
         edit-mode: replace
