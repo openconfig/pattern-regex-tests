@@ -90,7 +90,7 @@ jobs:
       continue-on-error: true
       id: demo
       run: |
-          title="### POSIX demo test results on openconfig/public"
+          title="### POSIX Demo Test Results on openconfig/public"
           status=0
           out=$(go run gotests/main.go -model-root ~/tmp/public testdata/*.yang 2>&1) || status=$?
           if [ "$status" -eq "0" ]; then
