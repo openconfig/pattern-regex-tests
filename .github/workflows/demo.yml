@@ -51,7 +51,7 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
-        body-includes: ${{ steps.demo.outputs.title }}
+        body-includes: XSD Demo Test Results on openconfig/public
 
     - name: Create or update comment
       uses: peter-evans/create-or-update-comment@v1
@@ -112,7 +112,7 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
-        body-includes: ${{ steps.demo.outputs.title }}
+        body-includes: POSIX Demo Test Results on openconfig/public
 
     - name: Create or update comment
       uses: peter-evans/create-or-update-comment@v1
