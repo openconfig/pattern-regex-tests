@@ -58,11 +58,13 @@ module regexp-test {
     pt:pattern-test-pass "2006-12-20T00:39:57Z";
     pt:pattern-test-pass "1937-01-01T12:00:27.87+00:20";
     // Out of range tests.
+    pt:pattern-test-fail "0000-00-01T00:00:00Z";
     pt:pattern-test-fail "0000-13-01T00:00:00Z";
     pt:pattern-test-fail "0000-20-01T00:00:00Z";
+    pt:pattern-test-fail "0000-01-00T00:00:00Z";
     pt:pattern-test-fail "0000-01-32T00:00:00Z";
     pt:pattern-test-fail "0000-01-40T00:00:00Z";
-    pt:pattern-test-fail "0000-01-01T25:00:00Z";
+    pt:pattern-test-fail "0000-01-01T24:00:00Z";
     pt:pattern-test-fail "0000-01-01T30:00:00Z";
     pt:pattern-test-fail "0000-01-01T00:60:00Z";
     pt:pattern-test-fail "0000-01-01T00:00:61Z";
@@ -70,13 +72,13 @@ module regexp-test {
     // + tests.
     pt:pattern-test-fail "0000-01-01T00:00:00Z+";
     pt:pattern-test-pass "0000-01-01T00:00:00+00:00";
-    pt:pattern-test-fail "0000-01-01T00:00:00+25:00";
+    pt:pattern-test-fail "0000-01-01T00:00:00+24:00";
     pt:pattern-test-fail "0000-01-01T00:00:00+30:00";
     pt:pattern-test-fail "0000-01-01T00:00:00+00:60";
     // - tests.
     pt:pattern-test-fail "0000-01-01T00:00:00Z-";
     pt:pattern-test-pass "0000-01-01T00:00:00-00:00";
-    pt:pattern-test-fail "0000-01-01T00:00:00-25:00";
+    pt:pattern-test-fail "0000-01-01T00:00:00-24:00";
     pt:pattern-test-fail "0000-01-01T00:00:00-30:00";
     pt:pattern-test-fail "0000-01-01T00:00:00-00:60";
     // Leap second tests.
@@ -95,6 +97,8 @@ module regexp-test {
     pt:pattern-test-pass "2006-12-20";
     pt:pattern-test-pass "1937-01-01";
     // Out of range tests.
+    pt:pattern-test-fail "0000-00-01";
+    pt:pattern-test-fail "0000-01-00";
     pt:pattern-test-fail "0000-13-01";
     pt:pattern-test-fail "0000-20-01";
     pt:pattern-test-fail "0000-33-01";
