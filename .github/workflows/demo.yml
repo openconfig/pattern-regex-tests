@@ -30,7 +30,7 @@ jobs:
     - name: Demo output on openconfig/public
       continue-on-error: true
       run: |
-          OCDIR=~/tmp/public pytests/pattern_test.sh
+          OCDIR=~/tmp/public find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 pytests/pattern_test.sh
 
   posix-pattern:
     name: posix-pattern statement
@@ -60,4 +60,4 @@ jobs:
     - name: Demo output on openconfig/public
       continue-on-error: true
       run: |
-          go run gotests/main.go -model-root ~/tmp/public testdata/regexp-test.yang
+          find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 go run gotests/main.go -model-root ~/tmp/public
