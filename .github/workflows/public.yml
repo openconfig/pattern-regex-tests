@@ -60,6 +60,6 @@ jobs:
 
     - name: Demo output on openconfig/public
       run: |
-          find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 go run gotests/main.go -model-root ~/tmp/public
+          find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 go run gotests/main.go -model-root "$OCDIR"
       env:
           OCDIR: /tmp/public
