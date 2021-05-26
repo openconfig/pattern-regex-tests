@@ -1,4 +1,4 @@
-name: Demo on openconfig/public
+name: openconfig/public
 
 on:
   pull_request:
@@ -25,12 +25,13 @@ jobs:
       run: pip3 install pyang
 
     - name: Get public repo
-      run: git clone https://github.com/openconfig/public.git ~/tmp/public
+      run: git clone https://github.com/openconfig/public.git /tmp/public
 
     - name: Demo output on openconfig/public
-      continue-on-error: true
       run: |
-          OCDIR=~/tmp/public find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 pytests/pattern_test.sh
+          find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 pytests/pattern_test.sh
+      env:
+          OCDIR: /tmp/public
 
   posix-pattern:
     name: posix-pattern statement
@@ -55,9 +56,10 @@ jobs:
       run: go build -v ./...
 
     - name: Get public repo
-      run: git clone https://github.com/openconfig/public.git ~/tmp/public
+      run: git clone https://github.com/openconfig/public.git /tmp/public
 
     - name: Demo output on openconfig/public
-      continue-on-error: true
       run: |
-          find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 go run gotests/main.go -model-root ~/tmp/public
+          find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 go run gotests/main.go -model-root "$OCDIR"
+      env:
+          OCDIR: /tmp/public
