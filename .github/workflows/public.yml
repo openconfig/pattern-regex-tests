@@ -31,7 +31,7 @@ jobs:
       run: |
           find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 pytests/pattern_test.sh
       env:
-          OCDIR=~/tmp/public
+          OCDIR: ~/tmp/public
 
   posix-pattern:
     name: posix-pattern statement
@@ -62,4 +62,4 @@ jobs:
       run: |
           find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 go run gotests/main.go -model-root ~/tmp/public
       env:
-          OCDIR=~/tmp/public
+          OCDIR: ~/tmp/public
