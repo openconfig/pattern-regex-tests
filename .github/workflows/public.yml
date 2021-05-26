@@ -25,13 +25,13 @@ jobs:
       run: pip3 install pyang
 
     - name: Get public repo
-      run: git clone https://github.com/openconfig/public.git ~/tmp/public
+      run: git clone https://github.com/openconfig/public.git /tmp/public
 
     - name: Demo output on openconfig/public
       run: |
           find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 pytests/pattern_test.sh
       env:
-          OCDIR: ~/tmp/public
+          OCDIR: /tmp/public
 
   posix-pattern:
     name: posix-pattern statement
@@ -56,10 +56,10 @@ jobs:
       run: go build -v ./...
 
     - name: Get public repo
-      run: git clone https://github.com/openconfig/public.git ~/tmp/public
+      run: git clone https://github.com/openconfig/public.git /tmp/public
 
     - name: Demo output on openconfig/public
       run: |
           find "$OCDIR/regexp-tests" -name "*.yang" -print0 | xargs -0 go run gotests/main.go -model-root ~/tmp/public
       env:
-          OCDIR: ~/tmp/public
+          OCDIR: /tmp/public
