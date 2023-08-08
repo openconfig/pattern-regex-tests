@@ -30,18 +30,6 @@ var (
 	failCaseExt = regexp.MustCompile(`\w+:pattern-test-fail`)
 )
 
-// YANGLeaf is a structure used to describe a particular leaf of YANG schema.
-type YANGLeaf struct {
-	module string
-	name   string
-}
-
-// RegexpTest specifies a test case for a particular regular expression check.
-type RegexpTest struct {
-	inData    string
-	wantMatch bool
-}
-
 // CheckRegexps tests mock input data against a set of leaves that have pattern
 // test cases specified for them. It ensures that the regexp compiles as a
 // POSIX regular expression according to the OpenConfig style guide.
