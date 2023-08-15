@@ -7,4 +7,4 @@ on:
 
 jobs:
   go:
-    uses: openconfig/common-ci/.github/workflows/basic_go.yml@v0
+    uses: openconfig/common-ci/.github/workflows/basic_go.yml@c2294c3c86c90e75e58c24a40d6f7f3364bbae9d
