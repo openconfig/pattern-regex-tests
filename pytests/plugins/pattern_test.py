@@ -88,7 +88,7 @@ def is_statement_fail_testcase(statement):
         return False
 
 def dnf_patterns(ctx, typestmt, prefix_to_mod_name):
-    """dnf_patterns obtains a DNF of the type's patterns.
+    r"""dnf_patterns obtains a DNF of the type's patterns.
 
     The return value is a list of list of patterns representing the OR of ANDs,
     aka. sum-of-products (DNF), of the type's patterns.

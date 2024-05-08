@@ -22,7 +22,7 @@ jobs:
           python-version: '3.x'
 
     - name: Set up pyang
-      run: pip3 install pyang
+      run: pip3 install setuptools pyang
 
     - name: Get public repo
       run: git clone https://github.com/openconfig/public.git /tmp/public
