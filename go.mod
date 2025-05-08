@@ -1,6 +1,8 @@
 module github.com/openconfig/pattern-regex-tests
 
-go 1.19
+go 1.23.0
+
+toolchain go1.24.2
 
 require (
 	github.com/golang/glog v1.2.4
