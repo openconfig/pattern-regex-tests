@@ -3,8 +3,8 @@ module github.com/openconfig/pattern-regex-tests
 go 1.19
 
 require (
-	github.com/golang/glog v1.1.0
-	github.com/google/go-cmp v0.5.9
+	github.com/golang/glog v1.2.4
+	github.com/google/go-cmp v0.6.0
 	github.com/openconfig/goyang v0.2.4
 	github.com/openconfig/ygot v0.9.0
 )
