@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// patterncheck provides functions to execute regular expression checks
+// defined in the OpenConfig yang modules against static test data to ensure
+// the yang regexes have their intended effect.
 package patterncheck
 
 import (
