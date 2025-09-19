@@ -2,13 +2,13 @@ module github.com/openconfig/pattern-regex-tests
 
 go 1.23.0
 
-toolchain go1.24.2
+toolchain go1.25.1
 
 require (
-	github.com/golang/glog v1.2.4
-	github.com/google/go-cmp v0.6.0
-	github.com/openconfig/goyang v0.2.4
-	github.com/openconfig/ygot v0.9.0
+	github.com/golang/glog v1.2.5
+	github.com/google/go-cmp v0.7.0
+	github.com/openconfig/goyang v0.4.0
+	github.com/openconfig/ygot v0.34.0
 )
 
 require (
