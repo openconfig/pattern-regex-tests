@@ -23,7 +23,7 @@ import (
 
 	log "github.com/golang/glog"
 
-	yangentry "github.com/openconfig/goyang/pkg/yangentry"
+	"github.com/openconfig/goyang/pkg/yangentry"
 	"github.com/openconfig/goyang/pkg/yang"
 	"github.com/openconfig/ygot/util"
 )
