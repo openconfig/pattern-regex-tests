@@ -23,8 +23,8 @@ import (
 
 	log "github.com/golang/glog"
 
-	yangutil "github.com/openconfig/goyang/pkg/util"
 	"github.com/openconfig/goyang/pkg/yang"
+	"github.com/openconfig/goyang/pkg/yangentry"
 	"github.com/openconfig/ygot/util"
 )
 
@@ -37,7 +37,7 @@ var (
 // test cases specified for them. It ensures that the regexp compiles as a
 // POSIX regular expression according to the OpenConfig style guide.
 func CheckRegexps(yangfiles, paths []string) ([]string, error) {
-	yangE, errs := yangutil.ProcessModules(yangfiles, paths)
+	yangE, errs := yangentry.Parse(yangfiles, paths)
 	if len(errs) != 0 {
 		return nil, fmt.Errorf("could not parse modules: %v", errs)
 	}
