@@ -7,7 +7,7 @@ toolchain go1.25.1
 require (
 	github.com/golang/glog v1.2.5
 	github.com/google/go-cmp v0.7.0
-	github.com/openconfig/goyang v0.4.0
+	github.com/openconfig/goyang v1.6.3
 	github.com/openconfig/ygot v0.34.0
 )
 
