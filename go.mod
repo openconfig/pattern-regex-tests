@@ -2,7 +2,7 @@ module github.com/openconfig/pattern-regex-tests
 
 go 1.23.4
 
-toolchain go1.25.4
+toolchain go1.25.5
 
 require (
 	github.com/golang/glog v1.2.5
